@@ -13,7 +13,7 @@ const stats = [
   },
   {
     icon: Users,
-    value: "185+ Years",
+    value: "125+ Years",
     label: "Combined Staff Experience",
     description: "Deep regional expertise across every facet of title and escrow",
   },
@@ -22,7 +22,7 @@ const stats = [
     value: "5",
     label: "Predecessor Companies",
     description:
-      "Successor to the Mills Abstract Co., Las Vegas Title Guaranty Co., and more",
+      "Successor to Las Vegas Title Guaranty, Mora Title, Mills Abstract, and more",
   },
 ];
 

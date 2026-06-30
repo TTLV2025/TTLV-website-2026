@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Menu, Phone } from "lucide-react";
 import {
@@ -10,17 +10,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const navLinks = [
     { href: "#about", label: "About" },
@@ -30,12 +22,7 @@ export function Nav() {
   ];
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? "bg-white shadow-md" : "bg-transparent"
-      )}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo + Name */}
         <a href="#" className="flex items-center gap-3">
@@ -47,14 +34,12 @@ export function Nav() {
             className="object-contain"
             unoptimized
           />
-          <div
-            className={cn(
-              "hidden sm:block transition-colors",
-              scrolled ? "text-navy" : "text-white"
-            )}
-          >
-            <div className="font-heading font-bold text-base leading-tight">
-              Territorial Title of Las Vegas
+          <div className="hidden sm:block text-navy leading-tight">
+            <div className="font-heading font-bold text-base leading-none">
+              Territorial Title
+            </div>
+            <div className="font-heading text-sm leading-tight text-navy/80">
+              of Las Vegas
             </div>
           </div>
         </a>
@@ -65,29 +50,18 @@ export function Nav() {
             <a
               key={link.href}
               href={link.href}
-              className={cn(
-                "text-sm font-medium transition-all duration-200",
+              className={
                 link.href === "#order"
-                  ? cn(
-                      "px-4 py-2 rounded font-semibold",
-                      scrolled
-                        ? "bg-navy text-white hover:bg-navy-light"
-                        : "bg-gold text-white hover:bg-gold-light"
-                    )
-                  : scrolled
-                  ? "text-gray-700 hover:text-navy"
-                  : "text-white/90 hover:text-white"
-              )}
+                  ? "px-4 py-2 rounded font-semibold text-sm bg-navy text-white hover:bg-navy-light transition-colors"
+                  : "text-sm font-medium text-gray-700 hover:text-navy transition-colors"
+              }
             >
               {link.label}
             </a>
           ))}
           <a
             href="tel:5054253563"
-            className={cn(
-              "flex items-center gap-1.5 text-sm font-medium transition-colors",
-              scrolled ? "text-navy" : "text-white/90 hover:text-white"
-            )}
+            className="flex items-center gap-1.5 text-sm font-medium text-navy hover:text-navy-light transition-colors"
           >
             <Phone className="h-4 w-4" />
             (505) 425-3563
@@ -98,10 +72,7 @@ export function Nav() {
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <button
-              className={cn(
-                "md:hidden p-2 rounded",
-                scrolled ? "text-navy" : "text-white"
-              )}
+              className="md:hidden p-2 rounded text-navy"
               aria-label="Open menu"
             >
               <Menu className="h-6 w-6" />
