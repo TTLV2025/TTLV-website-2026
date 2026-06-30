@@ -34,15 +34,33 @@ export async function POST(request: NextRequest) {
 
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
+    const port = parseInt(process.env.SMTP_PORT || "587");
+    const isSSL = port === 465;
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: process.env.SMTP_PORT === "465",
+      port,
+      secure: isSSL,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      // Accept self-signed certificates common on small/ISP mail servers
+      tls: {
+        rejectUnauthorized: false,
+      },
     });
+
+    console.log(`[SMTP] Connecting to ${process.env.SMTP_HOST}:${port} (secure=${isSSL})`);
+
+    // Verify connection before sending
+    try {
+      await transporter.verify();
+      console.log("[SMTP] Connection verified successfully");
+    } catch (verifyErr) {
+      console.error("[SMTP] Connection verify failed:", verifyErr);
+      throw verifyErr;
+    }
 
     // 1 — Order notification to order desk
     await transporter.sendMail({
@@ -98,6 +116,8 @@ export async function POST(request: NextRequest) {
       ],
     });
 
+    console.log(`[SMTP] Order notification sent to order@territorialtitle.com`);
+
     // 2 — Confirmation to submitter (if email provided)
     if (email) {
       await transporter.sendMail({
@@ -129,15 +149,18 @@ export async function POST(request: NextRequest) {
           </div>
         `,
       });
+      console.log(`[SMTP] Confirmation sent to ${email}`);
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Order submission error:", error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[SMTP] Order submission error:", message);
     return NextResponse.json(
       {
         error:
           "Failed to process order. Please call (505) 425-3563 or email order@territorialtitle.com.",
+        detail: message,
       },
       { status: 500 }
     );
