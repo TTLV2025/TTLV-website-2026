@@ -8,12 +8,19 @@ import {
   AlertCircle,
   FileText,
   Loader2,
+  Clock,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+
+// ─── Toggle this flag to show/hide the order form ───────────────────────────
+const ORDER_FORM_LIVE = false;
+// ────────────────────────────────────────────────────────────────────────────
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
@@ -85,6 +92,61 @@ export function OrderForm() {
       );
     }
   };
+
+  // ── Coming Soon state ──────────────────────────────────────────────────────
+  if (!ORDER_FORM_LIVE) {
+    return (
+      <section id="order" className="bg-navy py-20 px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white mb-4">
+              Place an Order
+            </h2>
+            <div className="w-16 h-1 bg-gold mx-auto mb-8" />
+
+            <div className="bg-white/10 border border-white/20 rounded-xl p-10 backdrop-blur-sm">
+              <div className="flex justify-center mb-5">
+                <div className="w-14 h-14 rounded-full bg-gold/20 flex items-center justify-center">
+                  <Clock className="h-7 w-7 text-gold-light" />
+                </div>
+              </div>
+              <h3 className="font-heading text-xl font-semibold text-white mb-3">
+                Online Ordering Coming Soon
+              </h3>
+              <p className="text-white/70 leading-relaxed mb-8">
+                We&apos;re putting the finishing touches on our online order
+                submission portal. In the meantime, our team is ready to take
+                your order directly.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="mailto:order@territorialtitle.com"
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-gold hover:bg-gold-light text-white font-semibold rounded-lg transition-colors"
+                >
+                  <Mail className="h-4 w-4" />
+                  order@territorialtitle.com
+                </a>
+                <a
+                  href="tel:5054253563"
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg border border-white/25 transition-colors"
+                >
+                  <Phone className="h-4 w-4" />
+                  (505) 425-3563
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+  // ──────────────────────────────────────────────────────────────────────────
 
   if (status === "success") {
     return (
